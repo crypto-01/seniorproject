@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>TweetQA Bert Model Tester</title>
+    <!--<link rel="stylesheet" href="style.css">-->
+    <link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">
+    <script>
+      async function postFormDataAsJson({url, formData}){
+            const plainFormData = Object.fromEntries(formData);
+            const formDataJsonString = JSON.stringify(plainFormData)
+
+            const fetchOptions = {
+                    method: "POST",
+                    headers: {
+                            //"content-type": "application/json",
+                            //"content-type": "multipart/form-data",
+                            "Accept": "application/json"
+                          },
+                  //body: formDataJsonString,
+                  body: formData,
+                  };
+              const response = await fetch(url, fetchOptions);
+              if (!response.ok){
+                      const errorMessage = await response.text();
+                      throw new Error(errorMessage);
+                    }
+              return response.json()
+            }
+       function handleFormSubmit(){
+              //const form = event.currentTarget;
+              forms = document.getElementsByTagName("form");
+              //var input = document.querySelector('input[type="file"]')
+              var input = document.getElementById("dataset")
+              form = forms[0]
+              outputBox = document.getElementById("output")
+
+
+              const url = form.action;
+              try{
+                      //let  formData = new FormData(form);
+                      let  formData = new FormData();
+                      formData.append("avatar",input.files[0])
+                      
+                      const responseData =  postFormDataAsJson({url,formData});
+                      responseData.then(function(result){
+                              //console.log(result.test_split)
+                              outputBox.innerHTML = JSON.stringify(result.test_split,null,2)
+                            })
+                    }
+              catch(error){
+                      console.error(error)
+                    }
+              return false;
+            }
+
+    </script>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="navbar__container">
+        <a href="/" id="navbar__logo">TweetQA BERT Model Tester</a>
+        <div class="navbar__toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <ul class="navbar__menu">
+            <li class="navbar__item">
+                <a href="/#home" class="navbar__links" id="home-page">Home</a>
+            </li>
+            <li class="navbar__item">
+                <a href="/#test" class="navbar__links" id="test-page">Test</a>
+            </li>
+            <li class="navbar__item">
+                <a href="datasetfile.html" class="navbar__links" id="datasetfile-page">Dataset</a>
+            </li>
+            <li class="navbar__item">
+                <a href="/#project" class="navbar__links" id="project-page">Project</a>
+            </li>
+            <li class="navbar__item">
+                <a href="/#team" class="navbar__links" id="team-page">Team</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!--Test Section-->
+<div class="main" id="test">
+    <div class="main__container">
+        <div class="main__content">
+            <h1>DataSet</h1>
+            <h3>Input:</h3>
+            <p>Upload a json file to be used for testing or training</p>
+            <br>
+            <!--<form  method="post" enctype="multipart/form-data">-->
+            <form  method="post" enctype = "multipart/form-data" onsubmit="return handleFormSubmit()">
+            <input type="file"
+                   id="dataset" name="avatar"
+                   accept="application/json">
+            <br><br>
+
+
+            <input type="submit" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
+            <br><br>
+
+            <h3>Output:</h3>
+            <textarea
+                    id="output"
+                    name="output"
+                    rows="8"
+                    cols="38"
+                    wrap="soft"
+                    maxlength="280"
+                    style="overflow:hidden; resize:none;"
+                    readonly="readonly"
+            ></textarea>
+            <br><br>
+            </form>
+        </div>
+    </div>
+</div>

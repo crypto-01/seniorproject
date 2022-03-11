@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+    <title>TweetQA Bert Model Tester</title>
+    <!--<link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">
+    <script>
+      async function postFormDataAsJson({url, formData}){
+            const plainFormData = Object.fromEntries(formData);
+            const formDataJsonString = JSON.stringify(plainFormData)
+
+            const fetchOptions = {
+                    method: "POST",
+                    headers: {
+                            "content-type": "application/json",
+                            "Accept": "application/json"
+                          },
+                  body: formDataJsonString,
+                  };
+              const response = await fetch(url, fetchOptions);
+              if (!response.ok){
+                      const errorMessage = await response.text();
+                      throw new Error(errorMessage);
+                    }
+              return response.json()
+            }
+       function handleFormSubmit(){
+              //const form = event.currentTarget;
+              forms = document.getElementsByTagName("form");
+              form = forms[0]
+              outputBox = document.getElementById("output")
+
+              const url = form.action;
+              try{
+                      const formData = new FormData(form);
+                      const responseData =  postFormDataAsJson({url,formData});
+                      responseData.then(function(result){
+                              outputBox.innerHTML = result.response;
+                            })
+                    }
+              catch(error){
+                      console.error(error)
+                    }
+              return false;
+            }
+
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar__container">
+            <a href="#home" id="navbar__logo">TweetQA BERT Model Tester</a>
+            <div class="navbar__toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="navbar__menu">
+                <li class="navbar__item">
+                    <a href="#home" class="navbar__links" id="home-page">Home</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="#test" class="navbar__links" id="test-page">Test</a>
+                </li>
+                <li class="navbar__item">
+                    <!--<a href="/datasetfile.html" class="navbar__links"
+                      id="datasetfile-page">Dataset</a> -->
+                    <a href="/dataset" class="navbar__links" id="datasetfile-page">Dataset</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="#project" class="navbar__links" id="project-page">Project</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="#team" class="navbar__links" id="team-page">Team</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--Hero Section-->
+    <div class="hero" id="home">
+        <div class="hero__container">
+            <h1 class="hero__heading">Test our <span>QA System</span></h1>
+            <p class="hero__description">Exceedingly Accurate</p>
+            <button class="main__btn"><a href="#test">Test</a></button>
+        </div>
+    </div>
+
+    <!--Test Section-->
+    <div class="main" id="test">
+        <div class="main__container">
+            <div class="main__content">
+                <h1>Test</h1>
+                <h3>Input:</h3>
+                <p>Copy a tweet into the first text field</p>
+                <br>
+                <form action="#" method="post" onsubmit= "return handleFormSubmit()">
+                <label id=tweetLabel for="tweet">Tweet:</label><br>
+                <textarea
+                        id="tweet"
+                        name="tweet"
+                        rows="7"
+                        cols="100"
+                        wrap="soft"
+                        maxlength="280"
+                        style="overflow:hidden; resize:none;"
+                ></textarea>
+                <br><br>
+
+                <label id=questionLabel for="question">Question:</label><br>
+                <textarea
+                        id="question"
+                        name="question"
+                        rows="7"
+                        cols="100"
+                        wrap="soft"
+                        maxlength="280"
+                        style="overflow:hidden; resize:none;"
+                ></textarea>
+                <br><br>
+
+
+                <input type="submit" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
+                <br><br>
+                </form>
+
+                <h3>Output:</h3>
+                <textarea
+                        id="output"
+                        name="output"
+                        rows="3"
+                        cols="100"
+                        wrap="soft"
+                        maxlength="280"
+                        style="overflow:hidden; resize:none;"
+                        readonly="readonly"
+                ></textarea>
+                <br><br>
+                <h3>Score:</h3>
+                <p>Rate the system's response from 1-10</p>
+                <br>
+                <textarea
+                        id="score"
+                        name="score"
+                        rows="3"
+                        cols="100"
+                        wrap="soft"
+                        maxlength="280"
+                        style="overflow:hidden; resize:none;"
+                ></textarea>
+                <br><br>
+
+
+                <input type="button" id=scoreButton value="Submit" style="font-size: 1rem;width: 6rem">
+                <br><br>
+                <br><br>
+            </div>
+        </div>
+    </div>
+    <!--Test Section-->
+    <div class="project" id="project">
+        <div class="project__container">
+            <div class="project__content">
+                <h1>About the Project</h1>
+                <h3>Summary:</h3>
+                <p>In this technology driven modern era, quick access to information is becoming increasingly popular
+                    and extremely helpful to the average person. Using machine learning techniques, it is possible to
+                    make software that can answer questions and provide information in real-time. Systems like this are
+                    imperative to applications that use and process real-time information. This system is a
+                    self-learning, machine learning program interfaced with a web application that can take Tweets and
+                    questions and provide answers based on these inputs. More specifically, this system not only
+                    takes Tweets and questions from a predefined dataset provided by TweetQA, the host of a competition
+                    we are competing in, but will also allow users to supply their own Tweets and questions. This system
+                    is based around the BERT model, a deep learning model based around transformers, and in the future
+                    will provide other deep learning models for comparison. With these comparisons, it can be seen how
+                    different deep learning models compare to the model this system is based around.
+                </p>
+                <br>
+            </div>
+        </div>
+    </div>
+    <!--Team Section-->
+    <div class="team" id="team">
+        <div class="team__container">
+            <div class="team__content">
+                <h1>About the Team</h1>
+                <h3>Summary:</h3>
+                <p>Kenneth Brown and Rusyibihere Debernard who are Computer Science majors as well as Zachary Gray and
+                    Steven Hartleb who are Software Engineers all completed this project.
+                </p>
+                <br>
+                <h3>Contact Us:</h3>
+                <p>Kenneth Brown: kjb6132@psu.edu<br>Rusyibihere Debernard: rbd5188@psu.edu<br>Zachary Gray: zag5069@psu.edu<br>Steven Hartleb: sxh5740@psu.edu
+                </p>
+            </div>
+        </div>
+    </div>
+    <!--<script src="app.js"></script>-->
+    <script src = "{{url_for("static",filename="app.js")}}"></script>
+</body>
+</html>
