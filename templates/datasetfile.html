@@ -5,8 +5,8 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
     <title>TweetQA Bert Model Tester</title>
-    <!--<link rel="stylesheet" href="style.css">-->
-    <link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">
+    <link rel="stylesheet" href="/static/style.css">
+    <!--<link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">-->
     <script>
       async function postFormDataAsJson({url, formData}){
             const plainFormData = Object.fromEntries(formData);
@@ -70,19 +70,27 @@
         </div>
         <ul class="navbar__menu">
             <li class="navbar__item">
-                <a href="/#home" class="navbar__links" id="home-page">Home</a>
+                <!--<a href="/#home" class="navbar__links" id="home-page">Home</a>-->
+                <a href="index.html#home" class="navbar__links" id="home-page">Home</a>
+
             </li>
             <li class="navbar__item">
-                <a href="/#test" class="navbar__links" id="test-page">Test</a>
+                <!--<a href="/#test" class="navbar__links" id="test-page">Test</a>-->
+                <a href="index.html#test" class="navbar__links" id="test-page">Test</a>
+
             </li>
             <li class="navbar__item">
                 <a href="datasetfile.html" class="navbar__links" id="datasetfile-page">Dataset</a>
             </li>
             <li class="navbar__item">
-                <a href="/#project" class="navbar__links" id="project-page">Project</a>
+                <!--<a href="/#project" class="navbar__links" id="project-page">Project</a>-->
+                <a href="index.html#project" class="navbar__links" id="project-page">Project</a>
+
             </li>
             <li class="navbar__item">
-                <a href="/#team" class="navbar__links" id="team-page">Team</a>
+                <!--<a href="/#team" class="navbar__links" id="team-page">Team</a>-->
+                <a href="index.html#team" class="navbar__links" id="team-page">Team</a>
+
             </li>
         </ul>
     </div>
@@ -92,10 +100,11 @@
 <div class="main" id="test">
     <div class="main__container">
         <div class="main__content">
-            <h1>DataSet</h1>
+            <h1>Dataset<br>______________________________________________________</h1>
             <h3>Input:</h3>
             <p>Upload a json file to be used for testing or training</p>
             <br>
+            <div style="display: inline-block;">
             <!--<form  method="post" enctype="multipart/form-data">-->
             <form  method="post" enctype = "multipart/form-data" onsubmit="return handleFormSubmit()">
             <input type="file"
@@ -104,22 +113,24 @@
             <br><br>
 
 
-            <input type="submit" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
-            <br><br>
+                <input class= "buttonCSS" type="button" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
+                <br>
 
-            <h3>Output:</h3>
-            <textarea
-                    id="output"
-                    name="output"
-                    rows="8"
-                    cols="38"
-                    wrap="soft"
-                    maxlength="280"
-                    style="overflow:hidden; resize:none;"
-                    readonly="readonly"
-            ></textarea>
+                <h3>Output:</h3>
+                <textarea
+                        id="output"
+                        name="output"
+                        rows="3"
+                        cols="28"
+                        wrap="soft"
+                        maxlength="280"
+                        style="overflow:hidden; resize:none;"
+                        readonly="readonly"
+                ></textarea>
+            </div>
             <br><br>
-            </form>
         </div>
     </div>
+    <script src="app.js"></script>
+
 </div>
