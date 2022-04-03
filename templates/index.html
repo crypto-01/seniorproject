@@ -46,6 +46,11 @@
                     }
               return false;
             }
+       function generateQA(){
+            //call function to get random json q and a, insert into these two elements
+            document.getElementsByName('tweet')[0].value = "I have it so there is now a connection from javascript to text";
+            document.getElementsByName('question')[0].value = "It only happens when the generate button is pressed";
+       }
 
     </script>
 </head>
@@ -99,7 +104,7 @@
                     <h3>Input:</h3><br>
                     <div>
                         <p>Copy a tweet into the first text field, <br>or generate a tweet using this button!
-                            <input type="button" class= "buttonCSS" id=generate_tweet_button value="Generate" style="font-size: 1rem;width: 6rem;">
+                            <input type="button" class= "buttonCSS" id=generate_tweet_button value="Generate" onclick = "generateQA()"; style="font-size: 1rem;width: 6rem;">
                         </p>
                     </div>
                     <br>
