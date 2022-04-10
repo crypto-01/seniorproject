@@ -14,11 +14,13 @@ os.environ["CUDA_VISIBLE_DEVICES"] ="-1"
 TRAIN_PATH = "./TweetQA_data/train.json"
 #TEST_PATH = "./TweetQA_data/test.json"
 TEST_PATH = TRAIN_PATH
-TRAIN = True
+TRAIN = False
 
 if TRAIN:
-    EPOCHS =10
-    BATCH_SIZE = 4
+    #EPOCHS =10
+    #BATCH_SIZE = 4
+    EPOCHS = 1
+    BATCH_SIZE = 1
     with open(TRAIN_PATH) as f:
         data = json.load(f)
     data =find_answer_in_tweet(data=data)
@@ -26,7 +28,9 @@ if TRAIN:
     train_batch = create_batche(data[:testing_data_length])
     test_batch = create_batche(data[testing_data_length:])
     twitterqa = TwitterQa(200,5e-5)
+    
     twitterqa.load_weights()
+    
     twitterqa.train(train_batch,test_batch,EPOCHS,BATCH_SIZE)
 else:
     with open(TEST_PATH) as f:
@@ -38,7 +42,9 @@ else:
     #batch = create_batche(data[:data_used])
     batch = create_batche(data[-testing_data_length:])
     twitterqa = TwitterQa(200,5e-5)
+    
     twitterqa.load_weights()
+    
     predictions = twitterqa.predict(batch)
     #print()
     #print("Tweet: ",predictions[9][0])

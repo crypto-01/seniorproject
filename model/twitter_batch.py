@@ -5,8 +5,9 @@ import numpy as np
 
 
 class TwitterBatch():
-    tokenizer = BertWordPieceTokenizer("/home/crypto/Programming/seniorproject/SeniorDesign2021/model/bert_base_uncased/vocab.txt",
-            lowercase=True)
+    #tokenizer = BertWordPieceTokenizer("/home/crypto/Programming/seniorproject/SeniorDesign2021/model/bert_base_uncased/vocab.txt",lowercase=True)
+    tokenizer = BertWordPieceTokenizer("model/bert_base_uncased/vocab.txt",lowercase=True)
+
     def __init__(self, questions, tweets, answers,answers_start,answers_length):
         self.questions = questions
         self.tweets = tweets

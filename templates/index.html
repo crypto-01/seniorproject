@@ -5,8 +5,8 @@
     <meta name="viewport"
     content="width=device-width, initial-scale=1.0">
     <title>TweetQA Bert Model Tester</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <!--<link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">-->
+    <!--<link rel="stylesheet" href="/static/style.css">-->
+    <link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">
     <script>
       async function postFormDataAsJson({url, formData}){
             const plainFormData = Object.fromEntries(formData);
@@ -103,12 +103,15 @@
                     <h1>Test<br>______________________________________________________</h1>
                     <h3>Input:</h3><br>
                     <div>
+
                         <p>Copy a tweet into the first text field, <br>or generate a tweet using this button!
+
                             <input type="button" class= "buttonCSS" id=generate_tweet_button value="Generate" onclick = "generateQA()"; style="font-size: 1rem;width: 6rem;">
+
                         </p>
                     </div>
                     <br>
-
+                    <form action="#" method="post" onsubmit= "return handleFormSubmit()">
                     <label id=tweetLabel for="tweet">Tweet:</label><br>
                     <textarea
                             id="tweet"
@@ -134,9 +137,9 @@
                     <br><br>
 
 
-                    <input type="button" class= "buttonCSS" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
+                    <input type="submit" class= "buttonCSS" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
                     <br>
-
+                    </form>
                     <h3>Output:</h3>
                     <br>
                     <textarea
@@ -211,7 +214,7 @@
             </div>
         </div>
     </div>
-    <script src="/static/app.js"></script>
-    <!--<script src = "{{url_for("static",filename="app.js")}}"></script>-->
+    <!--<script src="/static/app.js"></script>-->
+    <script src = "{{url_for("static",filename="app.js")}}"></script>
 </body>
 </html>
