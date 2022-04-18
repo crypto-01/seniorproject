@@ -46,10 +46,16 @@
                     }
               return false;
             }
-       function generateQA(){
+       async function generateQA(){
             //call function to get random json q and a, insert into these two elements
-            document.getElementsByName('tweet')[0].value = "I have it so there is now a connection from javascript to text";
-            document.getElementsByName('question')[0].value = "It only happens when the generate button is pressed";
+            let url ="/getrandomtweet"
+            let  response = await fetch(url)
+            let  data = await response.json()
+            
+            //document.getElementsByName('tweet')[0].value = "I have it so there is now a connection from javascript to text";
+            //document.getElementsByName('question')[0].value = "It only happens when the generate button is pressed";
+            document.getElementsByName('tweet')[0].value = data.tweet
+            document.getElementsByName('question')[0].value = data.question
        }
 
     </script>
