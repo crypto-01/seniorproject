@@ -56,7 +56,40 @@
             //document.getElementsByName('question')[0].value = "It only happens when the generate button is pressed";
             document.getElementsByName('tweet')[0].value = data.tweet
             document.getElementsByName('question')[0].value = data.question
+            outputBox = document.getElementById("output")
+            outputBox.innerHTML = ""
        }
+      async function rate_response(){
+              let url = "/response_rating"
+              rating_box = document.getElementById("score")
+              score = Number(rating_box.value)
+              if (rating_box.value == "") {
+                alert("please enter score between 1-10")
+                    }
+              else if (score >10){
+                alert("please enter score between 1-10")
+                    }
+              else{
+
+              //user_rating = {"rating":rating_box.value}
+              user_rating = {"rating":score}
+              console.log("here")
+              let response = await fetch(url,{
+                      method: 'POST',
+                      headers:{'Content-Type':'application/json'},
+                      body: JSON.stringify(user_rating)
+                    })
+              let data = await response.json()
+              alert(data.response)
+            }
+            }
+      async function clear_all(){
+            outputBox = document.getElementById("output")
+            //document.getElementsByName('tweet')[0].value = ""
+            document.getElementsByName('question')[0].value = ""
+            outputBox.innerHTML = ""
+            }
+
 
     </script>
 </head>
@@ -144,6 +177,7 @@
 
 
                     <input type="submit" class= "buttonCSS" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
+                    <input type="button" class= "buttonCSS" id=clear value="clear" style="font-size: 1rem;width: 6rem" onclick = "clear_all()">
                     <br>
                     </form>
                     <h3>Output:</h3>
@@ -168,14 +202,15 @@
                                 rows="3"
                                 cols="100"
                                 wrap="soft"
-                                maxlength="280"
+                                maxlength="2"
                                 style="position:relative; bottom:-10px; width: calc(10vw - 20px); height: calc(10vh - 20px); overflow:hidden; font-size: 18px; resize:none; border-radius:10px;"
+                                onkeypress="return onlyNumberKey(event)"
                         ></textarea>
                     </p>
                     <br><br>
 
 
-                    <input class= "buttonCSS" type="button" id=scoreButton value="Submit" style="font-size: 1rem;width: 6rem">
+                    <input class= "buttonCSS" type="button" id=scoreButton value="Submit" style="font-size: 1rem;width: 6rem" onclick="rate_response()";>
                     <br><br>
                     <br><br>
                 </div>
@@ -222,5 +257,14 @@
     </div>
     <!--<script src="/static/app.js"></script>-->
     <script src = "{{url_for("static",filename="app.js")}}"></script>
+    <script>
+      function onlyNumberKey(evt) {
+        // Only ASCII character in that range allowed
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+    </script>
 </body>
 </html>

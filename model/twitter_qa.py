@@ -19,10 +19,14 @@ class TwitterQa(object):
             input_ids = input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask
         )[0]
 
-        start_logits = layers.Dense(1, name="start_logit", use_bias=False)(embedding)
+        start_logits = layers.Dropout(.5)(embedding)
+        #start_logits = layers.Dense(1, name="start_logit", use_bias=False)(embedding)
+        start_logits = layers.Dense(1, name="start_logit", use_bias=False)(start_logits)
         start_logits = layers.Flatten()(start_logits)
 
-        end_logits = layers.Dense(1, name="end_logit", use_bias=False)(embedding)
+        end_logits = layers.Dropout(.5)(embedding)
+        #end_logits = layers.Dense(1, name="end_logit", use_bias=False)(embedding)
+        end_logits = layers.Dense(1, name="end_logit", use_bias=False)(end_logits)
         end_logits = layers.Flatten()(end_logits)
 
         start_probs = layers.Activation(tf.keras.activations.softmax)(start_logits)
@@ -34,13 +38,14 @@ class TwitterQa(object):
         )
         optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
         loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
-        model.compile(optimizer=optimizer, loss=[loss, loss])
+        model.compile(optimizer=optimizer, loss=[loss, loss],metrics=["accuracy"])
         return model
     def train(self,train_batch,test_batch,epoch,batch_size):
         f1_score_callback = Conputef1Callback((test_batch.input_ids,test_batch.segment_ids,test_batch.mask_ids),test_batch.answers)
         #print(len(train_batch.input_ids),len(train_batch.segment_ids),len(train_batch.mask_ids))
         #self.model.fit((train_batch.input_ids[:50],train_batch.segment_ids[:50],train_batch.mask_ids[:50]),(train_batch.start_tokens_idx[:50],train_batch.end_tokens_idx[:50]),batch_size=batch_size,epochs=epoch,verbose=2,callbacks=[f1_score_callback])
-        self.model.fit((train_batch.input_ids,train_batch.segment_ids,train_batch.mask_ids),(train_batch.start_tokens_idx,train_batch.end_tokens_idx),batch_size=batch_size,epochs=epoch,verbose=2,callbacks=[f1_score_callback])
+        #self.model.fit((train_batch.input_ids,train_batch.segment_ids,train_batch.mask_ids),(train_batch.start_tokens_idx,train_batch.end_tokens_idx),batch_size=batch_size,epochs=epoch,verbose=2,callbacks=[f1_score_callback])
+        self.model.fit((train_batch.input_ids,train_batch.segment_ids,train_batch.mask_ids),(train_batch.start_tokens_idx,train_batch.end_tokens_idx),batch_size=batch_size,epochs=epoch,verbose=2,validation_data=((test_batch.input_ids,test_batch.segment_ids,test_batch.mask_ids),(test_batch.start_tokens_idx,test_batch.end_tokens_idx)))
 
     def predict(self,batch):
         pred_start, pred_end = self.model.predict((batch.input_ids,batch.segment_ids,batch.mask_ids))
@@ -63,8 +68,8 @@ class TwitterQa(object):
             #print()
             pred_answer = pred_answer.strip("##")
             if pred_answer == "":
-                pass
-                #pred_answer = batch.tweets[idx]
+                #pass
+                pred_answer = batch.tweets[idx]
             batch_tweet = batch.tweets[idx]
             batch_question = batch.questions[idx]
             answers.append((batch_tweet,batch_question,pred_answer))

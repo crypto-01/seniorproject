@@ -2,13 +2,14 @@ from flask import Flask, render_template,request
 from werkzeug.utils import secure_filename
 import json
 from model.func_utility import find_answer_in_tweet ,create_batche
-from model.twitter_qa import TwitterQa
+#from model.twitter_qa import TwitterQa
+from model.twitter_qa2 import TwitterQa
 from model.tweetqa_eval import *
 import random
 
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] ="-1"
+#os.environ["CUDA_VISIBLE_DEVICES"] ="-1"
 twitterqa = TwitterQa(200,5e-5)
 twitterqa.load_weights()
 test_data_loc = "./TweetQA_data/test.json"
@@ -33,6 +34,9 @@ def home():
         answers = twitterqa.predict(batch)
         if(len(answers[0][2]) == 0):
             answers[0][2] = "can not answer that question"
+            model_response = {
+                    "response": "can not answer that question"
+                    }
         
         model_response = {
                 "response": answers[0][2]
@@ -42,6 +46,15 @@ def home():
         return model_response
     else:
         return render_template("index.html")
+@app.route("/response_rating",methods=["POST"])
+def response_rating():
+    if request.method == "POST":
+        data = request.json
+        thank_you_response = {}
+        thank_you_response["response"] = "Thank you for your feedback"
+        print(data)
+        return thank_you_response
+
 @app.route("/getrandomtweet",methods=["GET"])
 def get_random_tweet():
     if request.method == "GET":
@@ -52,6 +65,9 @@ def get_random_tweet():
         random_tweet["tweet"] = tweet_choice["Tweet"]
         random_tweet["question"] = tweet_choice["Question"]
         return random_tweet
+
+
+
 @app.route("/dataset" ,methods=["POST","GET"])
 def dataset():
     if request.method == "GET":

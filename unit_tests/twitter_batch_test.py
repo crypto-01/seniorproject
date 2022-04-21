@@ -1,6 +1,6 @@
 import unittest
-from model.twitter_batch import TwitterBatch
-from model.func_utility import find_answer_in_tweet,create_batche
+from ..model.twitter_batch import TwitterBatch
+from ..model.func_utility import find_answer_in_tweet,create_batche
 import numpy as np
 import os
 import json

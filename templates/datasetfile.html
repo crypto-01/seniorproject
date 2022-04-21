@@ -5,8 +5,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
     <title>TweetQA Bert Model Tester</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <!--<link rel="stylesheet" href="/static/style.css">-->
     <!--<link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">-->
+    <link rel="stylesheet" href="{{url_for("static",filename="style.css")}}">
     <script>
       async function postFormDataAsJson({url, formData}){
             const plainFormData = Object.fromEntries(formData);
@@ -80,7 +81,7 @@
 
             </li>
             <li class="navbar__item">
-                <a href="datasetfile.html" class="navbar__links" id="datasetfile-page">Dataset</a>
+                <a href="/dataset" class="navbar__links" id="datasetfile-page">Dataset</a>
             </li>
             <li class="navbar__item">
                 <a href="/#project" class="navbar__links" id="project-page">Project</a>
@@ -131,6 +132,6 @@
             <br><br>
         </div>
     </div>
-    <script src="app.js"></script>
+    <script src = "{{url_for("static",filename="app.js")}}"></script>
 
 </div>
