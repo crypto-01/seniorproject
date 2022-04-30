@@ -161,7 +161,8 @@ html,body
 .hero{
     background: #000000;
     background: linear-gradient(to right, #161616, #000000);
-    padding: 300px;
+    /*padding: 300px;*/
+    padding: 30%;
     align-content: baseline;
 }
 
@@ -322,7 +323,7 @@ html,body
     text-decoration: none;
     font-size: 16px;
     position:relative;
-    bottom:20px;
+    bottom:0px;
 }
 .buttonCSS:hover{
     background: #808080;
@@ -471,7 +472,7 @@ html,body
     margin-bottom: 32px;
 }
 
-.team__content h3 {
+.team__content h3,table th {
     font-size: 2rem;
     background: #00FFFF;
     background: -webkit-linear-gradient(
@@ -498,4 +499,16 @@ html,body
     align-items: center;
     color: aliceblue;
 
+}
+table{
+  border-collapse: collapse;
+}
+table td, table th{
+  padding:5px 15px;
+  border: 1px solid #ddd;
+  text-align:left;
+}
+table th{
+  /*background-color:darkblue;*/
+  /*color:#ffffff;*/
 }

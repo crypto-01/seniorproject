@@ -13,6 +13,7 @@ import os
 twitterqa = TwitterQa(200,5e-5)
 twitterqa.load_weights()
 test_data_loc = "./TweetQA_data/test.json"
+last_tweet = None
 with open(test_data_loc) as f:
     test_data = json.load(f)
 
@@ -25,6 +26,7 @@ def home():
         if data == None:
             model_response = {}
             model_response["response"] = "can not answer that"
+            last_tweet = None
             return model_response
         tweet = data["tweet"]
         question = data["question"]
@@ -32,6 +34,10 @@ def home():
         #answer = "model response"
         batch = create_batche(data)
         answers = twitterqa.predict(batch)
+        last_tweet = {} 
+        last_tweet["Tweet"] = tweet
+        last_tweet["Question"] = question
+        last_tweet["Answer"] = answers[0][2]
         if(len(answers[0][2]) == 0):
             answers[0][2] = "can not answer that question"
             model_response = {
@@ -52,7 +58,6 @@ def response_rating():
         data = request.json
         thank_you_response = {}
         thank_you_response["response"] = "Thank you for your feedback"
-        print(data)
         return thank_you_response
 
 @app.route("/getrandomtweet",methods=["GET"])
@@ -82,7 +87,7 @@ def dataset():
             data = json.loads(data)
             data =find_answer_in_tweet(data=data)
             #testing_data_length = int(len(data) * .06)
-            testing_data_length = 50
+            testing_data_length = 20
             #testing_data_length = 400
             #testing_data_length = int(len(data))
             #batch = create_batche(data[:data_used])
@@ -103,9 +108,20 @@ def dataset():
             with open("prediction_file.json","w") as f:
                 json.dump(data[-testing_data_length:],f)
 
-            scores = evaluate("gold_file.json","prediction_file.json","test")
+            if "Answer" not in data[0].keys():
+                scores = None
+            else:
+                scores = evaluate("gold_file.json","prediction_file.json","test")
+
             #response {"response": scores}
-            return scores["result"][0]
+            response_data = {}
+            if scores:
+                response_data["score"] = scores["result"][0]
+            else:
+                response_data["score"] = {"test_split":"No score avaiable"}
+            response_data["predictions"]= data[-testing_data_length:]
+            #return scores["result"][0]
+            return response_data
         #print(file)
         #return render_template("datasetfile.html")
         return "score could not be conputed"

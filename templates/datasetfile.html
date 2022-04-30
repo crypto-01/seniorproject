@@ -32,11 +32,15 @@
             }
        function handleFormSubmit(){
               //const form = event.currentTarget;
-              forms = document.getElementsByTagName("form");
+              //forms = document.getElementsByTagName("form");
+               var form = document.getElementById("datasetform")
+
               //var input = document.querySelector('input[type="file"]')
               var input = document.getElementById("dataset")
-              form = forms[0]
-              outputBox = document.getElementById("output")
+              //form = forms[0]
+              let outputBox = document.getElementById("output")
+               let mytable = document.getElementById("table")
+
 
 
               const url = form.action;
@@ -48,7 +52,38 @@
                       const responseData =  postFormDataAsJson({url,formData});
                       responseData.then(function(result){
                               //console.log(result.test_split)
-                              outputBox.innerHTML = JSON.stringify(result.test_split,null,2)
+                              //console.log(result.test_split)
+                              //console.log(result)
+                              //outputBox.innerHTML = JSON.stringify(result.test_split,null,2)
+                              outputBox.innerHTML = JSON.stringify(result.score.test_split,null,2)
+                              //outputBox.innerHTML = Object.entries(result.test_split)
+                              var rowCount = mytable.rows.length;
+                              var tableheaderrowcount =1
+                              for (var a = tableheaderrowcount; a < rowCount;a++){
+                                      mytable.deleteRow(tableheaderrowcount)
+                                    }
+                              var predictions = result.predictions;
+                              console.log(predictions[0]);
+                              
+                              for(var a =0; a < predictions.length -1; a++){
+                              var  row = mytable.insertRow()
+                              var tweet = row.insertCell()
+                              tweet.innerHTML = predictions[a].Tweet
+                              var question = row.insertCell(1)
+                              var answer = row.insertCell(2)
+                              question.innerHTML = predictions[a].Question
+                              answer.innerHTML = predictions[a].Answer
+                                    }
+                              /*
+                              rowCount = mytable.rows.length;
+                              if rowsCount > 2{ 
+                              mytable.style.display = "table"
+                                    }
+                              else{
+                                mytable.style.display = "table"
+                            }
+     */
+
                             })
                     }
               catch(error){
@@ -107,21 +142,21 @@
             <br>
             <div style="display: inline-block;">
             <!--<form  method="post" enctype="multipart/form-data">-->
-            <form  method="post" enctype = "multipart/form-data" onsubmit="return handleFormSubmit()">
+            <form id ="datasetform" method="post" enctype = "multipart/form-data" onsubmit="return handleFormSubmit()">
             <input type="file"
                    id="dataset" name="avatar"
                    accept="application/json">
             <br><br>
 
 
-                <input class= "buttonCSS" type="button" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
+                <input class= "buttonCSS" type="submit" id=testButton value="Submit" style="font-size: 1rem;width: 6rem">
                 <br>
 
                 <h3>Output:</h3>
                 <textarea
                         id="output"
                         name="output"
-                        rows="3"
+                        rows="5"
                         cols="28"
                         wrap="soft"
                         maxlength="280"
@@ -130,8 +165,28 @@
                 ></textarea>
             </div>
             <br><br>
+    <div class="show_results">
+      <table id = "table">
+        <thead>
+          <th>Tweet</th>
+          <th>Question</th>
+          <th>Answer</th>
+        </thead>
+        <tbody>
+            <!--
+          <tr>
+            <td>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Deserunt inventore consequatur quia! Eius quibusdam accusamus quo iure nihil cupiditate nobis non impedit numquam sit. Esse ex blanditiis quaerat corrupti quod. Culpa vel saepe distinctio quisquam unde ab ipsa cum voluptates assumenda. Sint quo officiis alias, numquam expedita, quibusdam nisi error odio nulla laborum veniam ipsa impedit aliquid odit quas fuga iure. Tempore hic rem, nulla voluptates praesentium dolores, error aliquam beatae, quasi blanditiis suscipit magni pariatur et cumque. Voluptatem dignissimos voluptate quam, qui illum a autem, veritatis corrupti ducimus deleniti itaque aspernatur doloremque eaque. Provident unde quod assumenda dignissimos incidunt?</td>
+            <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat eos dolore natus! Hic delectus voluptas dolorem. Ipsum possimus quod iusto?</td>
+            <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo, ipsam?</td>
+          </tr>
+            -->
+        </tbody>
+      </table>
+    </div>
         </div>
     </div>
-    <script src = "{{url_for("static",filename="app.js")}}"></script>
-
 </div>
+<script src = "{{url_for("static",filename="app.js")}}"></script>
+</body>
+</html>
+
