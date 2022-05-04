@@ -10,8 +10,8 @@ import random
 import os
 
 #os.environ["CUDA_VISIBLE_DEVICES"] ="-1"
-twitterqa = TwitterQa(200,5e-5)
-twitterqa.load_weights()
+twitterqa = TwitterQa(200,5e-5,load_model=True)
+#twitterqa.load_weights()
 test_data_loc = "./TweetQA_data/test.json"
 last_tweet = None
 with open(test_data_loc) as f:
@@ -37,16 +37,17 @@ def home():
         last_tweet = {} 
         last_tweet["Tweet"] = tweet
         last_tweet["Question"] = question
-        last_tweet["Answer"] = answers[0][2]
-        if(len(answers[0][2]) == 0):
-            answers[0][2] = "can not answer that question"
+        if answers:
+            last_tweet["Answer"] = answers[0][2]
+            if(len(answers[0][2]) == 0):
+                answers[0][2] = "can not answer that question"
+            
             model_response = {
-                    "response": "can not answer that question"
+                    "response": answers[0][2]
                     }
-        
-        model_response = {
-                "response": answers[0][2]
-                }
+        else:
+            model_response = {"response": "can not answer that question" }
+
         #return render_template("index.html",model_response=answer)
         #return ("",204)
         return model_response
@@ -104,7 +105,10 @@ def dataset():
             with open("gold_file.json","w") as f:
                 json.dump(data[-testing_data_length:],f)
             for a in range(testing_data_length):
-                data[-testing_data_length + a]["Answer"] = [predictions[a][2]]
+                if predictions:
+                    data[-testing_data_length + a]["Answer"] = [predictions[a][2]]
+                else:
+                    data[-testing_data_length + a]["Answer"] = [""]
             with open("prediction_file.json","w") as f:
                 json.dump(data[-testing_data_length:],f)
 

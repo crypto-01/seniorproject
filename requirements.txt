@@ -1,0 +1,9 @@
+tensorflow
+transformers
+git+https://github.com/Maluuba/nlg-eval.git@master
+numpy
+scikit-learn
+tokenizers
+flask
+Werkzeug
+selenium

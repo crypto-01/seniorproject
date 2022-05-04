@@ -162,7 +162,7 @@ html,body
     background: #000000;
     background: linear-gradient(to right, #161616, #000000);
     /*padding: 300px;*/
-    padding: 30%;
+    padding: 35%;
     align-content: baseline;
 }
 
@@ -229,10 +229,10 @@ html,body
 
 @media screen and (max-width: 768px){
     .hero__heading{
-        font-size: 60px;
+        font-size: 40px;
     }
     .hero__description{
-        font-size: 40px;
+        font-size: 20px;
     }
 }
 

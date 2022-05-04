@@ -8,9 +8,12 @@ import numpy as np
 
 class TwitterQa(object):
 
-    def __init__(self,max_len,learning_rate,weights=None):
+    def __init__(self,max_len,learning_rate,weights=None,load_model=False):
         #self.model = self.create_model(max_len,learning_rate)
-        self.model = self.create_model(max_len,learning_rate,0,100,weights)
+        if not load_model:
+            self.model = self.create_model(max_len,learning_rate,0,100,weights)
+        else:
+            self.load_model()
         
     def create_model(self,max_len, learning_rate,n_hidden_layers,n_nodes,weights=None):
         max_len = max_len
@@ -19,7 +22,7 @@ class TwitterQa(object):
         input_ids = layers.Input(shape=(max_len,), dtype=tf.int32)
         token_type_ids = layers.Input(shape=(max_len,), dtype=tf.int32)
         attention_mask = layers.Input(shape=(max_len,), dtype=tf.int32)
-        embedding = encoder(
+        embedding = encoder.bert(
             input_ids = input_ids, token_type_ids=token_type_ids, attention_mask=attention_mask
         )[0]
 
@@ -88,6 +91,8 @@ class TwitterQa(object):
         model.summary()
         return model
     def train(self,train_batch,test_batch,epoch,batch_size):
+        if not self.model:
+            return
         f1_score_callback = Conputef1Callback(test_batch)
         #print(len(train_batch.input_ids),len(train_batch.segment_ids),len(train_batch.mask_ids))
         #self.model.fit((train_batch.input_ids[:50],train_batch.segment_ids[:50],train_batch.mask_ids[:50]),(train_batch.start_tokens_idx[:50],train_batch.end_tokens_idx[:50]),batch_size=batch_size,epochs=epoch,verbose=2,callbacks=[f1_score_callback])
@@ -105,34 +110,11 @@ class TwitterQa(object):
         return loss
 
     def predict(self,batch):
+        if not self.model:
+            return
         pred_start, pred_end = self.model.predict((batch.input_ids,batch.segment_ids,batch.mask_ids))
         #tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
         answers = []
-        """
-        for idx,(start,end ,ids ) in enumerate(zip(pred_start,pred_end,batch.input_ids)):
-            pred_answer_start = np.argmax(start)
-            pred_answer_end = np.argmax(end)
-            pred_answer = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(ids)[pred_answer_start:pred_answer_end ])
-            #results_string = tokenizer.convert_ids_to_tokens(ids)[pred_answer_start:pred_answer_end ]
-            #pred_answer = results_string
-            #print(batch.tweets[idx])
-            #print(results_string)
-            #print(pred_answer)
-            #print()
-            #print("Tweet: ",batch.tweets[idx])
-            #print("Question :", batch.questions[idx])
-            #print("Answer: ",pred_answer)
-            #print()
-            if pred_answer.startswith("[CLS]"):
-                pred_answer = pred_answer[5:]
-            pred_answer = pred_answer.strip("##")
-            if pred_answer == "":
-                #pass
-                pred_answer = batch.tweets[idx]
-            batch_tweet = batch.tweets[idx]
-            batch_question = batch.questions[idx]
-            answers.append((batch_tweet,batch_question,pred_answer))
-            """
         for idx,(start,end ,tweet,span) in enumerate(zip(pred_start,pred_end,batch.tweets,batch.spans)):
             pred_answer_start = np.argmax(start)
             pred_answer_end = np.argmax(end)
@@ -149,16 +131,6 @@ class TwitterQa(object):
             if pred_answer.startswith("[CLS]"):
                 pred_answer = pred_answer[5:]
             pred_answer = pred_answer.strip("##")
-            #results_string = tokenizer.convert_ids_to_tokens(ids)[pred_answer_start:pred_answer_end ]
-            #pred_answer = results_string
-            #print(batch.tweets[idx])
-            #print(results_string)
-            #print(pred_answer)
-            #print()
-            #print("Tweet: ",batch.tweets[idx])
-            #print("Question :", batch.questions[idx])
-            #print("Answer: ",pred_answer)
-            #print()
             if pred_answer.startswith("[CLS]"):
                 pred_answer = pred_answer[5:]
             pred_answer = pred_answer.strip("##")
@@ -171,8 +143,16 @@ class TwitterQa(object):
             answers.append((batch_tweet,batch_question,pred_answer))
         return answers
 
-    def save_weights(self):
-        self.model.save_weights("twitterqamodelweights.h5")
+    def save_weights(self,weigt_location = "twitterqamodelweights.h5"):
+        if self.model:
+            self.model.save_weights(weigt_location)
 
-    def load_weights(self):
-        self.model.load_weights("twitterqamodelweights.h5")
+    def load_weights(self,weigt_location="twitterqamodelweights.h5"):
+        if self.model:
+            self.model.load_weights(weigt_location)
+    def save_model(self,file_location="saved_model"):
+        if self.model:
+            self.model.save(file_location)
+    def load_model(self,file_location="saved_model"):
+        self.model = tf.keras.models.load_model(file_location)
+        #self.model = tf.saved_model.load(file_location)
